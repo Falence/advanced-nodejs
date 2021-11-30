@@ -1,3 +1,6 @@
+// create just 2 threads in the threadpool
+process.env.UV_THREADPOOL_SIZE = 5;
+
 const crypto = require('crypto');
 
 const start = Date.now();
