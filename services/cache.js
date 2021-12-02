@@ -8,7 +8,17 @@ client.get = util.promisify(client.get);
 
 const exec = mongoose.Query.prototype.exec;
 
+// adding our own method to toggle caching as needed
+mongoose.Query.prototype.cache = function () {
+  this.useCache = true; 
+  return this; // so other methods can be chained to it later on
+}
 mongoose.Query.prototype.exec = async function() {
+  if (!this.useCache) {
+    return exec.apply(this, arguments);
+  }
+
+
   // CREATE A UNIQUE REDIS KEY
   // Object.assign() - safely copy properties from one object to another
   const key = JSON.stringify(Object.assign({}, this.getQuery(), {
