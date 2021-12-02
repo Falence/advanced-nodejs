@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
+const { clearHash } = require('../services/cache')
 
 const Blog = mongoose.model('Blog');
 
@@ -35,5 +36,7 @@ module.exports = app => {
     } catch (err) {
       res.send(400, err);
     }
+    // clear cache hash when new user is created
+    clearHash(req.user.id);
   });
 };
