@@ -20,9 +20,12 @@ mongoose.Query.prototype.exec = async function() {
 
   // if we do, return that
   if (cacheValue) {
+    const doc = JSON.parse(cacheValue);
+    
     // converting the cached object to a mongoose document
-    const doc = new this.model(JSON.parse(cacheValue));
-    return doc;
+    return Array.isArray(doc)
+    ? doc.map(d => new this.model(d))
+    : new this.model(doc);
   }
 
   // otherwise, issue the query and store the result in redis
